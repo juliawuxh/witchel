@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>圣诞Wichtel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+            margin: auto;
+        }
+        input, button {
+            margin: 5px;
+        }
+        .result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Wichtel</h1>
+        <p>输入三个形容词：</p >
+        <input type="text" id="adj1" placeholder="形容词1">
+        <input type="text" id="adj2" placeholder="形容词2">
+        <input type="text" id="adj3" placeholder="形容词3">
+        <br>
+        <button onclick="addParticipant()">添加玩家</button>
+        <button onclick="drawGuardian()">抽取玩家</button>
+        <div id="participantsList" class="result"></div>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        let participants = [];
+
+        function addParticipant() {
+            let adj1 = document.getElementById("adj1").value.trim();
+            let adj2 = document.getElementById("adj2").value.trim();
+            let adj3 = document.getElementById("adj3").value.trim();
+
+            if (adj1 && adj2 && adj3) {
+                let participant = {
+                    adjectives: [adj1, adj2, adj3]
+                };
+                participants.push(participant);
+
+                document.getElementById("participantsList").innerText = 
+                    "目前玩家人数：" + participants.length;
+
+                document.getElementById("adj1").value = "";
+                document.getElementById("adj2").value = "";
+                document.getElementById("adj3").value = "";
+            } else {
+                alert("请输入三个形容词！");
+            }
+        }
+
+        function drawGuardian() {
+            if (participants.length < 2) {
+                alert("需要至少两个玩家才能进行抽取！");
+                return;
+            }
+            
+            let index = Math.floor(Math.random() * participants.length);
+            let chosen = participants[index];
+            
+            document.getElementById("result").innerText = 
+                "抽到的玩家的形容词是：" + chosen.adjectives.join(", ");
+        }
+    </script>
+</body>
+</html>
