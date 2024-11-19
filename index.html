@@ -56,6 +56,10 @@
             font-size: 0.9em;
             color: #808080;
         }
+        .submission-count {
+            font-weight: bold;
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
@@ -71,13 +75,18 @@
 
         <!-- Main Game Page -->
         <div id="gamePage" class="hidden">
-            <p>输入三个形容词来描述自己：</p>
+            <p>输入三个形容词来描述想要的东西：</p>
             <input type="text" id="adj1" placeholder="形容词1">
             <input type="text" id="adj2" placeholder="形容词2">
             <input type="text" id="adj3" placeholder="形容词3">
             <br>
             <button onclick="addParticipant()">添加玩家</button>
             <button id="drawButton" onclick="drawGuardian()" disabled>抽取玩家</button>
+
+            <!-- Display Submission Count -->
+            <div class="submission-count" id="submissionCount">
+                已提交: 0 / 7 玩家
+            </div>
 
             <!-- Display Participants -->
             <div class="participants-list">
@@ -126,6 +135,9 @@
                 listItem.textContent = `${signedInUser}: ${adj1}, ${adj2}, ${adj3}`;
                 participantsList.appendChild(listItem);
 
+                // Update submission count
+                document.getElementById("submissionCount").innerText = `已提交: ${participants.length} / 7 玩家`;
+
                 // Clear the input fields
                 document.getElementById("adj1").value = "";
                 document.getElementById("adj2").value = "";
@@ -151,7 +163,7 @@
             let chosen = participants[index];
 
             document.getElementById("result").innerText = 
-                `抽到的玩家是: ${chosen.name}, 形容词是: ${chosen.adjectives.join(", ")}`;
+                `抽到的形容词是: ${chosen.adjectives.join(", ")}`;
         }
     </script>
 </body>
