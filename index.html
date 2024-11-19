@@ -129,10 +129,10 @@
                 };
                 participants.push(participant);
 
-                // Display participants
+                // Display only the player's name without adjectives
                 let participantsList = document.getElementById("participantsList");
                 let listItem = document.createElement("li");
-                listItem.textContent = `${signedInUser}: ${adj1}, ${adj2}, ${adj3}`;
+                listItem.textContent = `${signedInUser}`;
                 participantsList.appendChild(listItem);
 
                 // Update submission count
