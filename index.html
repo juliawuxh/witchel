@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,40 +5,109 @@
     <title>圣诞Wichtel</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Comic Sans MS", cursive, sans-serif;
+            background-color: #f9f5e3;
+            color: #2e1a16;
             text-align: center;
-            margin-top: 50px;
+            margin-top: 20px;
         }
         .container {
-            width: 80%;
-            max-width: 600px;
+            width: 90%;
+            max-width: 800px;
             margin: auto;
+            padding: 20px;
+            border: 2px solid #d4a373;
+            border-radius: 15px;
+            background-color: #fffaf0;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #b22222;
+            font-size: 2.5em;
+            margin-bottom: 10px;
         }
         input, button {
-            margin: 5px;
+            margin: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #d4a373;
+        }
+        button {
+            background-color: #d4a373;
+            color: white;
+            font-weight: bold;
+        }
+        .participants-list {
+            text-align: left;
+            margin-top: 20px;
+            font-size: 1em;
+            background-color: #fff8e7;
+            padding: 10px;
+            border-radius: 10px;
         }
         .result {
+            margin-top: 30px;
+        }
+        .hidden {
+            display: none;
+        }
+        .footer {
             margin-top: 20px;
+            font-size: 0.9em;
+            color: #808080;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Wichtel</h1>
-        <p>输入三个形容词：</p >
-        <input type="text" id="adj1" placeholder="形容词1">
-        <input type="text" id="adj2" placeholder="形容词2">
-        <input type="text" id="adj3" placeholder="形容词3">
-        <br>
-        <button onclick="addParticipant()">添加玩家</button>
-        <button onclick="drawGuardian()">抽取玩家</button>
-        <div id="participantsList" class="result"></div>
-        <div id="result" class="result"></div>
+        <h1>🎄 圣诞Wichtel 🎁</h1>
+
+        <!-- Sign-in Page -->
+        <div id="signInPage">
+            <p>请输入你的名字来开始:</p>
+            <input type="text" id="nameInput" placeholder="你的名字">
+            <button onclick="signIn()">登录</button>
+        </div>
+
+        <!-- Main Game Page -->
+        <div id="gamePage" class="hidden">
+            <p>输入三个形容词来描述自己：</p>
+            <input type="text" id="adj1" placeholder="形容词1">
+            <input type="text" id="adj2" placeholder="形容词2">
+            <input type="text" id="adj3" placeholder="形容词3">
+            <br>
+            <button onclick="addParticipant()">添加玩家</button>
+            <button id="drawButton" onclick="drawGuardian()" disabled>抽取玩家</button>
+
+            <!-- Display Participants -->
+            <div class="participants-list">
+                <h3>目前玩家:</h3>
+                <ul id="participantsList"></ul>
+            </div>
+
+            <div id="result" class="result"></div>
+        </div>
     </div>
+
+    <div class="footer">© 2024 圣诞Wichtel游戏</div>
 
     <script>
         let participants = [];
+        let signedInUser = "";
 
+        // Sign-in function
+        function signIn() {
+            const nameInput = document.getElementById("nameInput").value.trim();
+            if (nameInput) {
+                signedInUser = nameInput;
+                document.getElementById("signInPage").classList.add("hidden");
+                document.getElementById("gamePage").classList.remove("hidden");
+            } else {
+                alert("请输入你的名字！");
+            }
+        }
+
+        // Function to add a participant
         function addParticipant() {
             let adj1 = document.getElementById("adj1").value.trim();
             let adj2 = document.getElementById("adj2").value.trim();
@@ -47,32 +115,43 @@
 
             if (adj1 && adj2 && adj3) {
                 let participant = {
+                    name: signedInUser,
                     adjectives: [adj1, adj2, adj3]
                 };
                 participants.push(participant);
 
-                document.getElementById("participantsList").innerText = 
-                    "目前玩家人数：" + participants.length;
+                // Display participants
+                let participantsList = document.getElementById("participantsList");
+                let listItem = document.createElement("li");
+                listItem.textContent = `${signedInUser}: ${adj1}, ${adj2}, ${adj3}`;
+                participantsList.appendChild(listItem);
 
+                // Clear the input fields
                 document.getElementById("adj1").value = "";
                 document.getElementById("adj2").value = "";
                 document.getElementById("adj3").value = "";
+
+                // Enable draw button if 7 participants have added their adjectives
+                if (participants.length === 7) {
+                    document.getElementById("drawButton").disabled = false;
+                }
             } else {
                 alert("请输入三个形容词！");
             }
         }
 
+        // Function to draw a guardian
         function drawGuardian() {
-            if (participants.length < 2) {
-                alert("需要至少两个玩家才能进行抽取！");
+            if (participants.length < 7) {
+                alert("需要 7 位玩家才能进行抽取！");
                 return;
             }
-            
+
             let index = Math.floor(Math.random() * participants.length);
             let chosen = participants[index];
-            
+
             document.getElementById("result").innerText = 
-                "抽到的玩家的形容词是：" + chosen.adjectives.join(", ");
+                `抽到的玩家是: ${chosen.name}, 形容词是: ${chosen.adjectives.join(", ")}`;
         }
     </script>
 </body>
