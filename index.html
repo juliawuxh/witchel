@@ -111,13 +111,14 @@
                 signedInUser = nameInput;
                 document.getElementById("signInPage").classList.add("hidden");
                 document.getElementById("gamePage").classList.remove("hidden");
+                fetchData(); // Fetch existing data from the server on login
             } else {
                 alert("请输入你的名字！");
             }
         }
 
-        // Function to add a participant
-        function addParticipant() {
+        // Add participant and send data to the server
+        async function addParticipant() {
             let adj1 = document.getElementById("adj1").value.trim();
             let adj2 = document.getElementById("adj2").value.trim();
             let adj3 = document.getElementById("adj3").value.trim();
@@ -129,7 +130,24 @@
                 };
                 participants.push(participant);
 
-                // Display only the player's name without adjectives
+                // Send data to the server
+                try {
+                    const response = await fetch('http://localhost:3000/addData', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(participant),
+                    });
+
+                    if (response.ok) {
+                        alert('Data added successfully');
+                    } else {
+                        alert('Failed to add data');
+                    }
+                } catch (error) {
+                    console.error('Error adding data:', error);
+                }
+
+                // Update the UI
                 let participantsList = document.getElementById("participantsList");
                 let listItem = document.createElement("li");
                 listItem.textContent = `${signedInUser}`;
@@ -149,6 +167,21 @@
                 }
             } else {
                 alert("请输入三个形容词！");
+            }
+        }
+
+        // Fetch data from the Google Sheet
+        async function fetchData() {
+            try {
+                const response = await fetch('http://localhost:3000/getData');
+                const data = await response.json();
+                console.log('Fetched data:', data);
+
+                // Update the participants list with fetched data
+                const participantsList = document.getElementById("participantsList");
+                participantsList.innerHTML = data.map(row => `<li>${row[0]}</li>`).join(''); // Show only names
+            } catch (error) {
+                console.error('Error fetching data:', error);
             }
         }
 
